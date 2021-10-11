@@ -1,5 +1,10 @@
 ---
 title: "Spatial autocorrelation tutorial"
+knit: (function(input_file, encoding) {
+  out_dir <- 'docs';
+  rmarkdown::render(input_file,
+ encoding=encoding,
+ output_file=file.path(dirname(input_file), out_dir, 'index.html'))})
 output: html_document
 ---
 
@@ -7,22 +12,49 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+# Sample Covariance
+Range of values -Infinitive to + Infinitive
+Standart deviation is the SQUARE
+mEASURES Dispersion
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+#Correlation
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
-```{r cars}
-summary(cars)
+```{r}
+library(maptools)
+library(spdep)
+library(rgdal)
+library(spData)
+library(GISTools)
+
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
+The first data set contains census tract data for eight central NY counties:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+owd <- getwd()
+setwd(system.file("shapes", package="spData"))
+NYcounties <- readShapeSpatial("NY8_utm18")
+plot(NYcounties)
+names(NYcounties)
+```
+Let's work on a subset of the map by focusing on Syracuse:
+```{r}
+unique(NYcounties$AREANAME)
+syracuse <- NYcounties[NYcounties$AREANAME == "Syracuse city",]
+plot(syracuse)
+```
+```{r}
+coords <- coordinates(syracuse)
+par(mfrow=c(1,1))
+choropleth(syracuse, syracuse$PCTOWNHOME)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+coords <- coordinates(syracuse)
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
